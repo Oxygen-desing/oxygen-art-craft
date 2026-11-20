@@ -1,5 +1,5 @@
 // Replace with your 10-digit WhatsApp number prefixed with country code (no +, spaces, or dashes)
-const OWNER_WHATSAPP_NUMBER = "916264686049";
+const OWNER_WHATSAPP_NUMBER = "916294986049";
 
 // Supabase Project Credentials
 const SUPABASE_URL = "https://bfzucpseblpedzndljhw.supabase.co";
