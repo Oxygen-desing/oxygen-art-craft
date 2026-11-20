@@ -1,5 +1,14 @@
 // Replace with your 10-digit WhatsApp number prefixed with country code (no +, spaces, or dashes)
-const OWNER_WHATSAPP_NUMBER = "919876543210";
+const OWNER_WHATSAPP_NUMBER = "916264686049";
+
+// Supabase Project Credentials
+const SUPABASE_URL = "https://bfzucpseblpedzndljhw.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_JGdveBNw8XjTDklKUjwFBw_zknVJrir";
+
+const sbClient =
+  window.supabase && typeof window.supabase.createClient === "function"
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : null;
 
 const CATEGORIES = [
   "All",
@@ -81,20 +90,6 @@ const DEFAULT_ARTWORKS = [
     sold: true,
     image: "images/mehndi-1.svg",
     description: "Detailed traditional henna pattern design sheet for festive reference or framing."
-  },
-  {
-    id: "art-6",
-    title: "Traditional Festive Alpona",
-    category: "Alpona",
-    collection: "AFFORDABLE ART",
-    medium: "Acrylic on canvas",
-    size: "M",
-    price: 500000,
-    artist: "Anshu Pancholi",
-    location: "India",
-    sold: false,
-    image: "images/alpona-1.svg",
-    description: "Classic folk floral and swirl alpona artwork inspired by Bengal traditions."
   }
 ];
 
@@ -156,6 +151,8 @@ let state = {
   cart: [],
   pendingOrderItems: [],
   activeDetailId: null,
+  cloudArtworks: [],
+  authUser: null,
   region: safeStorageGet(STORAGE_KEYS.region, {
     flag: "🇮🇳",
     country: "India",
@@ -184,6 +181,9 @@ function safeStorageSet(key, value) {
 
 function getAllArtworks() {
   const customArts = safeStorageGet(STORAGE_KEYS.artworks, []);
+  if (Array.isArray(state.cloudArtworks) && state.cloudArtworks.length > 0) {
+    return [...state.cloudArtworks, ...customArts];
+  }
   return [...DEFAULT_ARTWORKS, ...customArts];
 }
 
@@ -216,6 +216,69 @@ function formatPrice(inrAmount) {
 
 function escapeText(value) {
   return String(value ?? "");
+}
+
+/* SUPABASE SYNC FUNCTIONS */
+async function syncArtworksFromSupabase() {
+  if (!sbClient) return;
+  try {
+    const { data, error } = await sbClient
+      .from("artworks")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error && Array.isArray(data) && data.length > 0) {
+      state.cloudArtworks = data.map((row) => ({
+        id: row.id,
+        title: row.title,
+        category: row.category || "Mandala Art",
+        collection: row.collection || "SHOP",
+        artist: row.artist || "Oxygen art & craft",
+        location: row.location || "India",
+        size: row.size || "Standard",
+        medium: row.medium || "Handcrafted",
+        price: Number(row.price || 0),
+        sold: Boolean(row.sold),
+        image: row.image_url || "images/mandala-1.svg",
+        description: row.description || ""
+      }));
+
+      renderHomeShowcase();
+      if (state.activePage === "artists") renderArtistsPage();
+      if (state.activePage === "buy") {
+        populateBuyFilterPanels();
+        renderBuyCatalog();
+      }
+    }
+  } catch {
+    // Fallback cleanly to local/default catalog if offline
+  }
+}
+
+async function initSupabaseSession() {
+  if (!sbClient) return;
+  try {
+    const { data } = await sbClient.auth.getSession();
+    state.authUser = data && data.session ? data.session.user : null;
+
+    sbClient.auth.onAuthStateChange((_event, session) => {
+      state.authUser = session ? session.user : null;
+      if (state.authUser && state.authUser.email) {
+        const prev = safeStorageGet(STORAGE_KEYS.profile, {});
+        safeStorageSet(STORAGE_KEYS.profile, {
+          ...prev,
+          email: state.authUser.email,
+          name:
+            (state.authUser.user_metadata && state.authUser.user_metadata.full_name) ||
+            prev.name ||
+            state.authUser.email.split("@")[0]
+        });
+        safeStorageSet(STORAGE_KEYS.loggedIn, true);
+      }
+    });
+  } catch {
+    // Ignore auth session lookup errors
+  }
 }
 
 /* LIVE WATERCOLOR-LIKE SPLASH CANVAS ON HOME HERO */
@@ -802,17 +865,18 @@ function setAuthModalMode(mode) {
 function openVaultModal() {
   document.getElementById("userUniqueIdDisplay").textContent = currentUserId;
   const profile = safeStorageGet(STORAGE_KEYS.profile, {});
-  const loggedIn = Boolean(safeStorageGet(STORAGE_KEYS.loggedIn, false));
+  const loggedIn = Boolean(state.authUser || safeStorageGet(STORAGE_KEYS.loggedIn, false));
 
   const statusEl = document.getElementById("loginStatusBadge");
   if (statusEl) {
-    statusEl.textContent = loggedIn && profile.email
-      ? `Logged in as ${profile.name || profile.email} (${profile.email})`
+    const activeEmail = (state.authUser && state.authUser.email) || profile.email;
+    statusEl.textContent = loggedIn && activeEmail
+      ? `Logged in as ${profile.name || activeEmail} (${activeEmail})`
       : "Not logged in — enter Email and Password to Login.";
   }
 
   document.getElementById("loginFullName").value = profile.name || "";
-  document.getElementById("loginEmail").value = profile.email || "";
+  document.getElementById("loginEmail").value = (state.authUser && state.authUser.email) || profile.email || "";
   document.getElementById("loginPassword").value = "";
   setAuthModalMode("login");
 
@@ -863,6 +927,8 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRegionButtonUI();
   updateCartBadge();
   renderHomeShowcase();
+  initSupabaseSession();
+  syncArtworksFromSupabase();
 
   document.querySelectorAll(".page-nav-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -991,7 +1057,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  document.getElementById("sellSubmissionForm").addEventListener("submit", (e) => {
+  document.getElementById("sellSubmissionForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const statusBox = document.getElementById("sellStatusMessage");
 
@@ -1013,6 +1079,20 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    if (sbClient) {
+      await sbClient.from("sell_submissions").insert({
+        artist_name: artistName,
+        seller_location: sellerLocation,
+        approximate_size: artSize,
+        medium: artMedium,
+        expected_price: expectedPrice,
+        your_name: yourName,
+        your_phone: yourPhone,
+        your_email: yourEmail,
+        additional_notes: notes
+      });
+    }
+
     const categoryGuess = CATEGORIES.find((c) => c !== "All" && artMedium.toLowerCase().includes(c.toLowerCase().split(" ")[0])) || "Mandala Art";
     const newArtwork = {
       id: `sell-${Date.now().toString().slice(-6)}`,
@@ -1025,7 +1105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       medium: artMedium,
       price: expectedPrice,
       sold: false,
-      image: "images/mandala-1.jpg",
+      image: "images/mandala-1.svg",
       description: `${notes || "Submitted via Sell form."} | Seller: ${yourName} (${yourPhone}, ${yourEmail}) | Location: ${sellerLocation}`
     };
 
@@ -1035,7 +1115,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     e.target.reset();
     statusBox.className = "text-xs font-semibold p-3 rounded-xl bg-emerald-100 text-emerald-900";
-    statusBox.textContent = "Artwork submission saved and added to the gallery!";
+    statusBox.textContent = "Artwork submission saved!";
     statusBox.classList.remove("hidden");
 
     populateBuyFilterPanels();
@@ -1070,7 +1150,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("closeOrderBtn").addEventListener("click", () => toggleModal("orderModal", false));
 
-  document.getElementById("orderForm").addEventListener("submit", (e) => {
+  document.getElementById("orderForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const client = {
       name: document.getElementById("clientName").value.trim(),
@@ -1086,6 +1166,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemsText = state.pendingOrderItems
       .map((i) => `${i.title} [${i.category}] x${i.qty} (${formatPrice(i.price * i.qty)})`)
       .join(", ");
+
+    if (sbClient) {
+      await sbClient.from("orders").insert({
+        user_id: currentUserId,
+        client_name: client.name,
+        client_phone: client.phone,
+        client_address: client.address,
+        client_pincode: client.pincode,
+        items_summary: itemsText,
+        total_amount: formatPrice(total),
+        region_info: `${state.region.flag} ${state.region.country} (${state.region.currency})`
+      });
+    }
 
     const orders = safeStorageGet(STORAGE_KEYS.orders, []);
     orders.push({
@@ -1132,48 +1225,74 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("switchToSignUpBtn").addEventListener("click", () => setAuthModalMode("signup"));
   document.getElementById("switchToCreateAccountBtn").addEventListener("click", () => setAuthModalMode("create"));
 
-  document.getElementById("forgotPasswordBtn").addEventListener("click", () => {
+  document.getElementById("forgotPasswordBtn").addEventListener("click", async () => {
     const emailVal = document.getElementById("loginEmail").value.trim();
     const feedbackBox = document.getElementById("loginFeedbackBox");
     if (!feedbackBox) return;
-    feedbackBox.classList.remove("hidden");
-    feedbackBox.textContent = emailVal
-      ? `Password reset instructions prepared for ${emailVal}.`
-      : "Enter your Email first and then click Forgot Password.";
+
+    if (!emailVal) {
+      feedbackBox.classList.remove("hidden");
+      feedbackBox.textContent = "Enter your Email first and then click Forgot Password.";
+      return;
+    }
+
+    if (sbClient) {
+      const { error } = await sbClient.auth.resetPasswordForEmail(emailVal);
+      feedbackBox.classList.remove("hidden");
+      feedbackBox.textContent = error
+        ? `Reset notice: ${error.message}`
+        : `Password reset email sent to ${emailVal}.`;
+    }
   });
 
-  document.getElementById("loginAuthForm").addEventListener("submit", (e) => {
+  document.getElementById("loginAuthForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
     const fullName = document.getElementById("loginFullName").value.trim();
     const feedbackBox = document.getElementById("loginFeedbackBox");
+    const statusEl = document.getElementById("loginStatusBadge");
 
     if (!email || !password) return;
 
-    const existingProfile = safeStorageGet(STORAGE_KEYS.profile, {});
-    const updatedProfile = {
-      ...existingProfile,
-      name: fullName || existingProfile.name || email.split("@")[0],
-      email
-    };
-    safeStorageSet(STORAGE_KEYS.profile, updatedProfile);
-    safeStorageSet(STORAGE_KEYS.loggedIn, true);
+    if (sbClient) {
+      if (state.authMode === "signup" || state.authMode === "create") {
+        const { data, error } = await sbClient.auth.signUp({
+          email,
+          password,
+          options: { data: { full_name: fullName || email.split("@")[0] } }
+        });
 
-    if (feedbackBox) {
-      feedbackBox.classList.remove("hidden");
-      const actionText =
-        state.authMode === "create"
-          ? "Account created and logged in"
-          : state.authMode === "signup"
-            ? "Signed up and logged in"
-            : "Logged in successfully";
-      feedbackBox.textContent = `${actionText} as ${updatedProfile.name} (${email}).`;
-    }
+        if (feedbackBox) {
+          feedbackBox.classList.remove("hidden");
+          feedbackBox.textContent = error
+            ? error.message
+            : `Account registered for ${email}. Check inbox if email confirmation is enabled.`;
+        }
+        if (!error && data && data.user) {
+          state.authUser = data.user;
+        }
+        return;
+      }
 
-    const statusEl = document.getElementById("loginStatusBadge");
-    if (statusEl) {
-      statusEl.textContent = `Logged in as ${updatedProfile.name} (${email})`;
+      const { data, error } = await sbClient.auth.signInWithPassword({ email, password });
+      if (feedbackBox) {
+        feedbackBox.classList.remove("hidden");
+        if (error) {
+          feedbackBox.textContent = error.message;
+          return;
+        }
+        state.authUser = data.user;
+        const displayName =
+          (data.user && data.user.user_metadata && data.user.user_metadata.full_name) ||
+          fullName ||
+          email.split("@")[0];
+        const prev = safeStorageGet(STORAGE_KEYS.profile, {});
+        safeStorageSet(STORAGE_KEYS.profile, { ...prev, name: displayName, email });
+        safeStorageSet(STORAGE_KEYS.loggedIn, true);
+        feedbackBox.textContent = `Logged in as ${displayName} (${email}).`;
+        if (statusEl) statusEl.textContent = `Logged in as ${displayName} (${email})`;
+      }
     }
   });
 });
