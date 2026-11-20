@@ -1,0 +1,138 @@
+/* Crisp Gallery Emblem, Color Splash Hero & Clean Cards */
+.oac-emblem-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  background: linear-gradient(120deg, #f59e0b 0%, #ec4899 55%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.oac-emblem-word {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: #1e293b;
+}
+
+.hero-stage {
+  background: #ffffff;
+}
+
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-splash-logo {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem 2rem;
+}
+
+.hero-logo-mark {
+  font-size: clamp(3.4rem, 9vw, 5.6rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 0.95;
+  color: #ffffff;
+  text-shadow: 0 8px 28px rgba(15, 23, 42, 0.14);
+}
+
+.hero-logo-sub {
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #1e293b;
+}
+
+.explore-circle {
+  width: 84px;
+  height: 84px;
+  border-radius: 9999px;
+  background: rgba(51, 65, 85, 0.88);
+  color: #ffffff;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1.35;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.explore-circle:hover {
+  background: #0f172a;
+  transform: scale(1.04);
+}
+
+.hero-down-arrow {
+  animation: arrowBounce 1.6s infinite ease-in-out;
+}
+
+@keyframes arrowBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.page-enter {
+  animation: pageViewReveal 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes pageViewReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.banner-about {
+  background: linear-gradient(120deg, #ea580c 0%, #db2777 50%, #2563eb 100%);
+}
+
+.fixed-region-widget {
+  position: fixed;
+  left: 16px;
+  bottom: 20px;
+}
+
+.gallery-clean-card {
+  transition: transform 0.22s ease;
+}
+
+.gallery-clean-card:hover {
+  transform: translateY(-3px);
+}
+
+button {
+  transition: transform 0.14s ease, background-color 0.18s ease;
+}
+
+button:active {
+  transform: scale(0.97);
+}

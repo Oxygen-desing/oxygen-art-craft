@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oxygen art &amp; craft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="bg-white text-slate-900 min-h-screen flex flex-col">
+
+  <!-- Top Navigation Bar -->
+  <header id="top-anchor" class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <!-- Left Clean Emblem Logo -->
+      <button type="button" id="brandHomeBtn" aria-label="Oxygen art and craft Home"
+        class="flex items-center gap-2 text-left group focus:outline-none">
+        <span class="oac-emblem-mark">oac</span>
+        <span class="oac-emblem-word">oxygen art &amp; craft</span>
+      </button>
+
+      <!-- Center Navigation -->
+      <nav aria-label="Primary Navigation" class="hidden md:flex items-center gap-7 text-xs font-semibold tracking-widest uppercase text-slate-600">
+        <button type="button" data-page="home" class="page-nav-btn hover:text-slate-950 transition">HOME</button>
+        <button type="button" data-page="artists" class="page-nav-btn hover:text-slate-950 transition">ARTISTS</button>
+
+        <!-- BUY with Dropdown Menu -->
+        <div class="relative" id="buyNavDropdownWrap">
+          <div class="inline-flex items-center gap-1">
+            <button type="button" data-page="buy" class="page-nav-btn hover:text-slate-950 transition">BUY</button>
+            <button type="button" id="buyDropdownArrowBtn" aria-label="Open Buy Categories" aria-expanded="false"
+              class="p-1 text-slate-500 hover:text-slate-950">
+              <i class="fa-solid fa-caret-down text-[11px]"></i>
+            </button>
+          </div>
+          <div id="buyDropdownMenu" class="hidden absolute left-0 top-full mt-2 w-52 bg-white border border-slate-200 rounded-xl shadow-xl py-2 z-40">
+            <button type="button" data-buy-filter="PAINTINGS" class="buy-dropdown-item w-full text-left px-4 py-2 text-xs font-semibold tracking-wider text-slate-700 hover:bg-slate-100">PAINTINGS</button>
+            <button type="button" data-buy-filter="SCULPTURES" class="buy-dropdown-item w-full text-left px-4 py-2 text-xs font-semibold tracking-wider text-slate-700 hover:bg-slate-100">SCULPTURES</button>
+            <button type="button" data-buy-filter="AFFORDABLE ART" class="buy-dropdown-item w-full text-left px-4 py-2 text-xs font-semibold tracking-wider text-slate-700 hover:bg-slate-100">AFFORDABLE ART</button>
+            <button type="button" data-buy-filter="LUXURY ART" class="buy-dropdown-item w-full text-left px-4 py-2 text-xs font-semibold tracking-wider text-slate-700 hover:bg-slate-100">LUXURY ART</button>
+            <button type="button" data-buy-filter="MANDALA ART" class="buy-dropdown-item w-full text-left px-4 py-2 text-xs font-semibold tracking-wider text-slate-700 hover:bg-slate-100">MANDALA ART</button>
+            <button type="button" data-buy-filter="ALL" class="buy-dropdown-item w-full text-left px-4 py-2 text-xs font-semibold tracking-wider text-slate-700 hover:bg-slate-100 border-t border-slate-100 mt-1 pt-2">ALL</button>
+          </div>
+        </div>
+
+        <button type="button" data-page="sell" class="page-nav-btn hover:text-slate-950 transition">SELL</button>
+        <button type="button" data-page="about" class="page-nav-btn hover:text-slate-950 transition">ABOUT</button>
+      </nav>
+
+      <!-- Right Utility Icons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button type="button" id="vaultBtn" title="Login &amp; Account" aria-label="Login and Account"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-slate-800 hover:bg-slate-100">
+          <i class="fa-regular fa-user text-base"></i>
+        </button>
+
+        <button type="button" id="toggleSearchBarBtn" title="Search Artworks" aria-label="Search Artworks"
+          class="w-9 h-9 rounded-full flex items-center justify-center text-slate-800 hover:bg-slate-100">
+          <i class="fa-solid fa-magnifying-glass text-base"></i>
+        </button>
+
+        <button type="button" id="openCartBtn" title="Shopping Bag" aria-label="Shopping Bag"
+          class="relative w-9 h-9 rounded-full flex items-center justify-center text-slate-800 hover:bg-slate-100">
+          <i class="fa-solid fa-bag-shopping text-base"></i>
+          <span id="cartCount" class="ml-0.5 text-xs font-extrabold text-slate-900">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Page Navigation -->
+    <div class="flex md:hidden items-center justify-center gap-4 py-1.5 px-3 border-t border-slate-100 text-[11px] font-semibold uppercase tracking-wider text-slate-600 bg-white">
+      <button type="button" data-page="home" class="page-nav-btn">HOME</button>
+      <button type="button" data-page="artists" class="page-nav-btn">ARTISTS</button>
+      <button type="button" data-page="buy" class="page-nav-btn">BUY</button>
+      <button type="button" data-page="sell" class="page-nav-btn">SELL</button>
+      <button type="button" data-page="about" class="page-nav-btn">ABOUT</button>
+    </div>
+
+    <!-- Expandable Search Bar -->
+    <div id="searchBarPanel" class="hidden border-t border-slate-100 bg-slate-50 px-4 py-2.5">
+      <div class="max-w-xl mx-auto relative">
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search drawings, artists, or categories..."
+          class="w-full pl-10 pr-4 py-2 rounded-full border border-slate-300 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
+        />
+        <i class="fa-solid fa-magnifying-glass text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main View Switcher -->
+  <main id="pageViewRoot" class="w-full flex-1">
+
+    <!-- ==================== PAGE 1: HOME ==================== -->
+    <section id="view-home" class="page-view page-enter" aria-label="Home Page">
+      <!-- Live Color Splash Hero Stage -->
+      <div id="heroStage" class="hero-stage relative flex flex-col items-center justify-center min-h-[82vh] px-4 py-12 overflow-hidden">
+        <canvas id="liveSplashCanvas" class="hero-canvas" aria-hidden="true"></canvas>
+
+        <div class="relative z-10 text-center max-w-2xl mx-auto flex flex-col items-center">
+          <div class="hero-splash-logo" aria-label="Oxygen art and craft">
+            <span class="hero-logo-mark">oac</span>
+            <span class="hero-logo-sub">oxygen art &amp; craft</span>
+          </div>
+
+          <a href="#homeGalleryAnchor" id="heroExploreBtn" class="explore-circle mt-6">
+            <span>EXPLORE</span>
+            <span>ARTWORKS</span>
+          </a>
+          <a href="#homeGalleryAnchor" aria-label="Scroll Down" class="hero-down-arrow text-slate-700 hover:text-slate-950 mt-2">
+            <i class="fa-solid fa-arrow-down text-sm"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Clean Editorial Gallery Showcase on Scroll -->
+      <div id="homeGalleryAnchor" class="max-w-6xl mx-auto px-4 sm:px-6 py-16 space-y-20">
+        <!-- Exhibit of the Month -->
+        <div class="space-y-8 text-center">
+          <div class="inline-block">
+            <h2 class="text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-slate-800 pb-2 border-b border-slate-400">
+              EXHIBIT OF THE MONTH
+            </h2>
+          </div>
+          <div id="homeExhibitContainer" class="max-w-xl mx-auto"></div>
+        </div>
+
+        <!-- Featured Pieces -->
+        <div class="space-y-8 text-center">
+          <div class="inline-block">
+            <h2 class="text-xs sm:text-sm font-semibold uppercase tracking-[0.22em] text-slate-800 pb-2 border-b border-slate-400">
+              FEATURED PIECES
+            </h2>
+          </div>
+          <div id="homeFeaturedGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 2: ARTISTS ==================== -->
+    <section id="view-artists" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-8" aria-label="Artists Page">
+      <div class="text-center space-y-1 border-b border-slate-200 pb-4">
+        <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-[0.18em] text-slate-900">ARTISTS</h2>
+      </div>
+      <div id="artistsDirectoryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </section>
+
+    <!-- ==================== PAGE 3: BUY ==================== -->
+    <section id="view-buy" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6" aria-label="Buy Page">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-200 pb-3">
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
+          HOME &gt; COLLECTIONS &gt; <span id="buyBreadcrumbCollection" class="text-slate-900">SHOP</span>
+        </p>
+
+        <div class="flex items-center gap-2 text-xs">
+          <label for="buySortSelect" class="font-bold uppercase tracking-wider text-slate-500">SORT BY</label>
+          <select id="buySortSelect" class="border border-slate-300 rounded-lg px-3 py-1.5 bg-white font-semibold text-slate-800">
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="title-asc">Title: A to Z</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <aside class="lg:col-span-3 bg-white border border-slate-200 rounded-2xl p-4 space-y-4">
+          <div class="flex items-center justify-between border-b border-dashed border-slate-300 pb-2.5">
+            <h3 class="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-900">SEARCH BY</h3>
+            <button type="button" id="clearBuyFiltersBtn" class="text-xs text-slate-500 hover:text-slate-900 underline">
+              Clear Filters
+            </button>
+          </div>
+
+          <div class="border-b border-slate-100 pb-3">
+            <button type="button" data-filter-toggle="pricePanel" data-sign-id="pricePlusSign"
+              class="filter-accordion-btn w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-800 py-1">
+              <span>PRICE</span>
+              <span id="pricePlusSign" class="text-sm font-extrabold">+</span>
+            </button>
+            <div id="pricePanel" class="hidden mt-2.5 space-y-2 text-xs text-slate-700">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="1000" data-max="5000" />
+                <span>₹ 1,000.00 INR - ₹ 5,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="5001" data-max="10000" />
+                <span>₹ 5,001.00 INR - ₹ 10,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="10001" data-max="20000" />
+                <span>₹ 10,001.00 INR - ₹ 20,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="20001" data-max="30000" />
+                <span>₹ 20,001.00 INR - ₹ 30,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="30001" data-max="40000" />
+                <span>₹ 30,001.00 INR - ₹ 40,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="40001" data-max="50000" />
+                <span>₹ 40,001.00 INR - ₹ 50,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="50001" data-max="100000" />
+                <span>₹ 50,001.00 INR - ₹ 100,000.00 INR</span>
+              </label>
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" class="buy-price-filter rounded" data-min="100001" data-max="99999999" />
+                <span>&gt; ₹ 100,000.00 INR</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="border-b border-slate-100 pb-3">
+            <button type="button" data-filter-toggle="artistPanel" data-sign-id="artistPlusSign"
+              class="filter-accordion-btn w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-800 py-1">
+              <span>ARTIST</span>
+              <span id="artistPlusSign" class="text-sm font-extrabold">+</span>
+            </button>
+            <div id="artistPanel" class="hidden mt-2.5 space-y-2 text-xs text-slate-700 max-h-56 overflow-y-auto"></div>
+          </div>
+
+          <div class="border-b border-slate-100 pb-3">
+            <button type="button" data-filter-toggle="mediumPanel" data-sign-id="mediumPlusSign"
+              class="filter-accordion-btn w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-800 py-1">
+              <span>MEDIUM</span>
+              <span id="mediumPlusSign" class="text-sm font-extrabold">+</span>
+            </button>
+            <div id="mediumPanel" class="hidden mt-2.5 space-y-2 text-xs text-slate-700 max-h-56 overflow-y-auto"></div>
+          </div>
+
+          <div class="pb-1">
+            <button type="button" data-filter-toggle="sizePanel" data-sign-id="sizePlusSign"
+              class="filter-accordion-btn w-full flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-800 py-1">
+              <span>SIZE</span>
+              <span id="sizePlusSign" class="text-sm font-extrabold">+</span>
+            </button>
+            <div id="sizePanel" class="hidden mt-2.5 space-y-2 text-xs text-slate-700 max-h-56 overflow-y-auto"></div>
+          </div>
+        </aside>
+
+        <div class="lg:col-span-9">
+          <div id="buyCatalogContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== PAGE 4: SELL ==================== -->
+    <section id="view-sell" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-8" aria-label="Sell Page">
+      <div class="text-center space-y-2 border-b border-slate-200 pb-6 max-w-3xl mx-auto">
+        <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">
+          HOME &gt; COLLECTIONS &gt; ALL &gt; SELL
+        </p>
+        <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-[0.18em] text-slate-900">SELL</h2>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          Submit the details of your artwork to share it with Oxygen art &amp; craft. Please fill out the artist, size, medium, price, and your contact details below.
+        </p>
+      </div>
+
+      <form id="sellSubmissionForm" class="max-w-2xl mx-auto bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-6 text-xs sm:text-sm">
+        <div class="text-center space-y-1">
+          <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">
+            PLEASE TELL US ABOUT THE ART YOU&rsquo;D LIKE TO SELL
+          </p>
+          <h3 class="text-base font-extrabold uppercase tracking-[0.16em] text-slate-900">ARTWORK DETAILS</h3>
+        </div>
+
+        <div class="space-y-4">
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellArtistName">ARTIST NAME *</label>
+            <input type="text" id="sellArtistName" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="Seller / Artist name" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellArtistLocation">SELLER LOCATION (WHERE FROM) *</label>
+            <input type="text" id="sellArtistLocation" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="City / District / State" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellArtSize">APPROXIMATE SIZE *</label>
+            <input type="text" id="sellArtSize" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder='e.g., 18" x 18" or A4' />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellArtMedium">MEDIUM *</label>
+            <input type="text" id="sellArtMedium" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="e.g., Pen and Pencil, Water colour on paper, Lippan clay" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellArtPrice">PRICE EXPECTED (INR) *</label>
+            <input type="number" id="sellArtPrice" min="100" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="Expected price in INR" />
+          </div>
+
+          <label class="flex items-center gap-2.5 text-xs text-slate-700 pt-1 cursor-pointer">
+            <input type="checkbox" id="sellCriteriaAgree" required class="rounded" />
+            <span>Yes, I confirm this artwork is original and meets Oxygen art &amp; craft submission criteria.</span>
+          </label>
+        </div>
+
+        <div class="pt-2 space-y-4">
+          <h3 class="text-sm font-extrabold uppercase tracking-[0.16em] text-slate-900">YOUR DETAILS</h3>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellYourName">YOUR NAME *</label>
+            <input type="text" id="sellYourName" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="Your full name" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellYourPhone">PHONE NUMBER *</label>
+            <input type="tel" id="sellYourPhone" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="Your phone number" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1" for="sellYourEmail">EMAIL ADDRESS *</label>
+            <input type="email" id="sellYourEmail" required class="w-full px-3 py-2 border-b border-slate-300 focus:border-slate-900 focus:outline-none bg-transparent" placeholder="Your email address" />
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700" for="sellAdditionalNotes">ADDITIONAL NOTES</label>
+          <textarea id="sellAdditionalNotes" rows="4" class="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:border-slate-900" placeholder="Tell us more about the artwork or its condition"></textarea>
+        </div>
+
+        <button type="submit" class="px-6 py-2.5 bg-slate-900 text-white text-xs font-extrabold uppercase tracking-widest hover:bg-slate-800">
+          SUBMIT
+        </button>
+
+        <div id="sellStatusMessage" class="hidden text-xs font-semibold p-3 rounded-xl"></div>
+      </form>
+    </section>
+
+    <!-- ==================== PAGE 5: ABOUT ==================== -->
+    <section id="view-about" class="page-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-8" aria-label="About Page">
+      <div class="banner-about rounded-3xl p-7 sm:p-10 text-white shadow-sm">
+        <p class="text-xs font-bold uppercase tracking-[0.2em] text-white/85">Introduction &amp; Guide</p>
+        <h2 class="text-2xl sm:text-4xl font-black mt-1">ABOUT OXYGEN ART &amp; CRAFT</h2>
+        <p class="text-xs sm:text-sm text-white/90 mt-2 max-w-2xl">
+          Everything you need to know about Oxygen art &amp; craft, its origin, collections, login, buying, and selling.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
+          <h3 class="font-extrabold text-slate-900 text-base">1. What Oxygen art &amp; craft Does &amp; Where It Is Made</h3>
+          <p class="text-slate-600 leading-relaxed">
+            <strong>Oxygen art &amp; craft</strong> is an art &amp; craft platform created in <strong>India</strong> (West Bengal) to showcase handcrafted artworks and connect creators with collectors.
+          </p>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
+          <h3 class="font-extrabold text-slate-900 text-base">2. Artworks &amp; Categories Available</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Available categories include <strong>Mandala Art</strong>, <strong>Lippan Art</strong>, <strong>Charcoal</strong>, <strong>Water Color</strong>, <strong>Mehndi Art</strong>, and <strong>Alpona</strong>—ranging from detailed paper drawings to textured wall crafts.
+          </p>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
+          <h3 class="font-extrabold text-slate-900 text-base">3. How Login / Artist ID Works</h3>
+          <p class="text-slate-600 leading-relaxed">
+            Click the <strong>User icon</strong> (top right) to open Login, sign up / create account, view your user ID, reset password, or return to store.
+          </p>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
+          <h3 class="font-extrabold text-slate-900 text-base">4. How to Buy &amp; How to Sell</h3>
+          <p class="text-slate-600 leading-relaxed">
+            <strong>To Buy:</strong> Go to <strong>BUY</strong>, filter by price/artist/medium/size, add drawings to your bag or click Buy, enter your details, and send via WhatsApp.<br />
+            <strong>To Sell:</strong> Open <strong>SELL</strong>, fill out artwork details, check the agreement box, add your details &amp; notes, and submit.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer id="bottom-anchor" class="border-t border-slate-200 bg-slate-50 text-slate-700 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-center space-y-1.5 text-xs">
+      <p class="font-extrabold text-slate-900 text-sm">
+        &copy; Oxygen art &amp; craft. Handcrafted artworks &amp; WhatsApp ordering.
+      </p>
+      <p class="font-semibold text-slate-600">
+        Thank you for visiting this website
+      </p>
+    </div>
+  </footer>
+
+  <!-- Fixed Bottom-Left Country & Currency Switcher -->
+  <div class="fixed-region-widget z-40">
+    <div id="regionMenu" class="hidden mb-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-2xl p-2 text-xs space-y-1 max-h-72 overflow-y-auto">
+      <p class="px-2.5 py-1 font-bold text-slate-500 uppercase tracking-wider">Country &amp; Currency</p>
+      <button type="button" data-flag="🇮🇳" data-country="India" data-currency="INR" data-symbol="₹" data-rate="1"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇮🇳 Indian Rupees</span>
+        <span>₹ INR</span>
+      </button>
+      <button type="button" data-flag="🇺🇸" data-country="United States" data-currency="USD" data-symbol="$" data-rate="0.012"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇺🇸 US Dollar</span>
+        <span>$ USD</span>
+      </button>
+      <button type="button" data-flag="🇪🇺" data-country="Europe" data-currency="EUR" data-symbol="€" data-rate="0.011"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇪🇺 Euro</span>
+        <span>€ EUR</span>
+      </button>
+      <button type="button" data-flag="🇬🇧" data-country="United Kingdom" data-currency="GBP" data-symbol="£" data-rate="0.0095"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇬🇧 British Pound</span>
+        <span>£ GBP</span>
+      </button>
+      <button type="button" data-flag="🇦🇪" data-country="United Arab Emirates" data-currency="AED" data-symbol="AED " data-rate="0.044"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇦🇪 Arab Dirham / Rupee</span>
+        <span>AED</span>
+      </button>
+      <button type="button" data-flag="🇸🇦" data-country="Saudi Arabia" data-currency="SAR" data-symbol="SAR " data-rate="0.045"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇸🇦 Saudi Riyal</span>
+        <span>SAR</span>
+      </button>
+      <button type="button" data-flag="🇯🇵" data-country="Japan" data-currency="JPY" data-symbol="¥" data-rate="1.82"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇯🇵 Japanese Yen</span>
+        <span>¥ JPY</span>
+      </button>
+      <button type="button" data-flag="🇨🇦" data-country="Canada" data-currency="CAD" data-symbol="CA$" data-rate="0.0165"
+        class="region-option w-full flex items-center justify-between px-3 py-2 rounded-xl hover:bg-slate-100 text-left font-semibold">
+        <span>🇨🇦 Canadian Dollar</span>
+        <span>CA$ CAD</span>
+      </button>
+    </div>
+
+    <button type="button" id="regionBtn" aria-label="Select Country and Currency"
+      class="flex items-center gap-2 px-3 py-2 rounded-lg bg-white border border-slate-300 shadow-md text-xs font-bold text-slate-800 hover:bg-slate-50">
+      <span id="regionFlag" aria-hidden="true">🇮🇳</span>
+      <span id="regionCode">INR</span>
+      <i class="fa-solid fa-chevron-down text-[10px] text-slate-500"></i>
+    </button>
+  </div>
+
+  <!-- Drawing Detail Modal -->
+  <div id="detailModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl">
+      <div class="relative bg-slate-100">
+        <img id="detailImg" src="" alt="" class="w-full h-64 object-cover" />
+        <button type="button" id="closeDetailBtn" aria-label="Close detail"
+          class="absolute top-3 right-3 w-9 h-9 rounded-full bg-black/70 text-white flex items-center justify-center hover:bg-black">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-3">
+        <div class="flex items-center justify-between gap-2">
+          <span id="detailCategory" class="text-xs font-bold uppercase px-2.5 py-1 rounded-full bg-purple-100 text-purple-800"></span>
+          <span id="detailPrice" class="text-lg font-extrabold text-emerald-700"></span>
+        </div>
+        <h3 id="detailTitle" class="text-xl font-bold text-slate-900"></h3>
+        <p id="detailDesc" class="text-sm text-slate-600"></p>
+        <div id="detailBuyActions" class="pt-3 flex flex-wrap gap-2">
+          <button type="button" id="detailAddCartBtn" class="flex-1 bg-slate-900 text-white py-2.5 px-4 rounded-xl text-sm font-semibold hover:bg-slate-800">
+            <i class="fa-solid fa-bag-shopping mr-1"></i> Add to Bag
+          </button>
+          <button type="button" id="detailOrderNowBtn" class="flex-1 bg-emerald-600 text-white py-2.5 px-4 rounded-xl text-sm font-semibold hover:bg-emerald-700">
+            <i class="fa-brands fa-whatsapp mr-1"></i> Order Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bag Modal -->
+  <div id="cartModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="text-lg font-bold text-slate-900">Your Bag</h3>
+        <button type="button" id="closeCartBtn" aria-label="Close bag" class="text-slate-500 hover:text-slate-800">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+      <div id="cartItemsList" class="space-y-3 text-sm"></div>
+      <div class="border-t pt-3 flex items-center justify-between font-bold text-base">
+        <span>Total</span>
+        <span id="cartTotalText" class="text-emerald-700">₹0</span>
+      </div>
+      <button type="button" id="cartCheckoutBtn" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-semibold hover:bg-emerald-700 disabled:opacity-40">
+        Proceed to Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Order Form & WhatsApp Dispatch Modal -->
+  <div id="orderModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="text-lg font-bold text-slate-900">Order Details</h3>
+        <button type="button" id="closeOrderBtn" aria-label="Close order modal" class="text-slate-500 hover:text-slate-800">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <div id="orderItemsSummary" class="bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs space-y-1"></div>
+
+      <form id="orderForm" class="space-y-3 text-sm">
+        <div>
+          <label class="block font-medium mb-1" for="clientName">Full Name *</label>
+          <input type="text" id="clientName" required class="w-full px-3 py-2 border rounded-xl" placeholder="Enter your full name" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1" for="clientPhone">Phone Number *</label>
+          <input type="tel" id="clientPhone" required pattern="[0-9+\-\s]{10,15}" class="w-full px-3 py-2 border rounded-xl" placeholder="10-digit mobile number" />
+        </div>
+        <div>
+          <label class="block font-medium mb-1" for="clientAddress">Full Address *</label>
+          <textarea id="clientAddress" rows="2" required class="w-full px-3 py-2 border rounded-xl" placeholder="Village/Street, Landmark, Post/City, District"></textarea>
+        </div>
+        <div>
+          <label class="block font-medium mb-1" for="clientPincode">PIN Code *</label>
+          <input type="text" id="clientPincode" required pattern="[0-9]{6}" maxlength="6" class="w-full px-3 py-2 border rounded-xl" placeholder="6-digit PIN code" />
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-semibold hover:bg-emerald-700">
+          Confirm &amp; Prepare WhatsApp Order
+        </button>
+      </form>
+
+      <div id="whatsappReadyBox" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-4 space-y-3 text-sm">
+        <p class="font-bold text-emerald-900">Order saved in your session! Send via WhatsApp:</p>
+        <pre id="whatsappPreviewText" class="whitespace-pre-wrap text-xs bg-white p-2.5 rounded-lg border text-slate-700"></pre>
+        <a id="whatsappSendLink" href="#" target="_blank" rel="noopener noreferrer"
+          class="block text-center w-full bg-green-600 text-white py-2.5 rounded-xl font-bold hover:bg-green-700">
+          <i class="fa-brands fa-whatsapp mr-1"></i> Open WhatsApp &amp; Send Order
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div id="vaultModal" class="fixed inset-0 bg-black/60 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b pb-3">
+        <h3 class="text-lg font-extrabold uppercase tracking-wider text-slate-900">LOGIN</h3>
+        <button type="button" id="closeVaultBtn" aria-label="Close login modal" class="text-slate-500 hover:text-slate-800">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+
+      <p id="loginStatusBadge" class="text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-lg px-3 py-2"></p>
+
+      <form id="loginAuthForm" class="space-y-3 text-sm">
+        <div id="createAccountNameWrap" class="hidden">
+          <label class="block text-xs font-bold uppercase tracking-wider mb-1" for="loginFullName">Full Name</label>
+          <input type="text" id="loginFullName" class="w-full px-3 py-2 border rounded-xl" placeholder="Enter your full name" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider mb-1" for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" required class="w-full px-3 py-2 border rounded-xl" placeholder="you@example.com" />
+        </div>
+
+        <div id="loginPasswordWrap">
+          <label class="block text-xs font-bold uppercase tracking-wider mb-1" for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" required class="w-full px-3 py-2 border rounded-xl" placeholder="Enter password" />
+        </div>
+
+        <button type="submit" id="loginSubmitBtn" class="w-full bg-slate-900 text-white py-2.5 rounded-xl text-xs font-extrabold uppercase tracking-widest hover:bg-slate-800">
+          LOGIN
+        </button>
+      </form>
+
+      <div class="pt-1 flex flex-col gap-2 text-xs font-semibold text-slate-700">
+        <div class="flex items-center justify-between">
+          <button type="button" id="switchToSignUpBtn" class="hover:text-slate-950 underline">Sign Up</button>
+          <button type="button" id="switchToCreateAccountBtn" class="hover:text-slate-950 underline">Create Account</button>
+        </div>
+        <div class="flex items-center justify-between pt-1 border-t border-slate-100">
+          <button type="button" id="forgotPasswordBtn" class="text-blue-700 hover:underline">Forgot Password</button>
+          <button type="button" id="returnToStoreBtn" class="text-slate-800 hover:underline font-bold">Return to Store</button>
+        </div>
+      </div>
+
+      <div id="loginFeedbackBox" class="hidden text-xs font-semibold p-2.5 rounded-lg bg-emerald-50 text-emerald-900 border border-emerald-200"></div>
+
+      <div class="border-t pt-3 space-y-1.5">
+        <p class="text-[11px] font-bold text-slate-500">User ID: <span id="userUniqueIdDisplay" class="font-mono text-slate-800"></span></p>
+        <div id="vaultOrdersList" class="text-xs text-slate-600 space-y-1.5"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

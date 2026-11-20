@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+  <defs>
+    <linearGradient id="cg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="55%" stop-color="#475569" />
+      <stop offset="100%" stop-color="#e2e8f0" />
+    </linearGradient>
+  </defs>
+  <rect width="600" height="450" fill="#f1f5f9" />
+  <rect x="90" y="45" width="420" height="335" rx="12" fill="url(#cg1)" />
+  <circle cx="300" cy="210" r="92" fill="none" stroke="#f8fafc" stroke-width="2" opacity="0.7" />
+  <path d="M160 295 C235 160, 365 160, 440 295" fill="none" stroke="#0f172a" stroke-width="8" stroke-linecap="round" />
+  <text x="300" y="418" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#1e293b">
+    EXPRESSIVE CHARCOAL STUDY (TEST)
+  </text>
+</svg>

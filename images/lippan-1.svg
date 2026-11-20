@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+  <rect width="600" height="450" fill="#fef3c7" />
+  <rect x="75" y="45" width="450" height="340" rx="16" fill="#fde68a" stroke="#b45309" stroke-width="4" />
+  <g stroke="#92400e" stroke-width="3" fill="none">
+    <path d="M135 215 Q215 110 300 215 Q385 320 465 215" />
+    <path d="M135 245 Q215 140 300 245 Q385 350 465 245" />
+    <circle cx="300" cy="145" r="24" fill="#e0f2fe" stroke="#0369a1" />
+    <polygon points="215,190 232,215 215,240 198,215" fill="#e0f2fe" stroke="#0369a1" />
+    <polygon points="385,190 402,215 385,240 368,215" fill="#e0f2fe" stroke="#0369a1" />
+  </g>
+  <text x="300" y="418" text-anchor="middle" font-family="sans-serif" font-size="16" font-weight="700" fill="#78350f">
+    MIRROR CLAY LIPPAN PANEL (TEST)
+  </text>
+</svg>
